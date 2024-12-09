@@ -18,163 +18,164 @@ class HomeScreen extends StatelessWidget {
     return GetBuilder<HomeController>(
       builder: (controller) {
         return Scaffold(
-            body: Padding(
-          padding: const EdgeInsets.only(top: 35.0, left: 12, right: 12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
+            body: SingleChildScrollView(
+              child: Padding(
+                        padding: const EdgeInsets.only(top: 35.0, left: 12, right: 12),
+                        child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
 
-                  Expanded(
+                    Expanded(
 
-                    child: InkWell(
-                      onTap: () {
-                        Get.toNamed(Routes.profile);
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 45,
-                            width: 45,
-                            child: CustomImageView(
-                              imageType: CustomImageType.network,
-                              imageData: controller.myProfile.value?.data?.address??"",
-                              clipBorderRadius: 100,
-                              boxFit: BoxFit.fill,
+                      child: InkWell(
+                        onTap: () {
+                          Get.toNamed(Routes.profile);
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 45,
+                              width: 45,
+                              child: CustomImageView(
+                                imageType: CustomImageType.network,
+                                imageData: controller.myProfile.value?.data?.address??"",
+                                clipBorderRadius: 100,
+                                boxFit: BoxFit.fill,
+                              ),
                             ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomTextView(
+                                  text:"${ controller.myProfile.value?.data?.firstName??""} ${controller.myProfile.value?.data?.lastName??""}",
+                                  textViewStyle: CustomTextViewStyle.medium,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                CustomTextView(
+                                  text: controller.myProfile.value?.data?.email??"",
+                                  textViewStyle: CustomTextViewStyle.medium,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        LocalStorage.remove(AppConstants.token);
+                        LocalStorage.eraseAll();
+                        Get.offAllNamed(Routes.login);
+                      },
+                      child: const Column(
+                        children: [
+                          Icon(
+                            Icons.logout,
+                            color: Colors.indigo,
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomTextView(
-                                text:"${ controller.myProfile.value?.data?.firstName??""} ${controller.myProfile.value?.data?.lastName??""}",
-                                textViewStyle: CustomTextViewStyle.medium,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              CustomTextView(
-                                text: controller.myProfile.value?.data?.email??"",
-                                textViewStyle: CustomTextViewStyle.medium,
-                              ),
-                            ],
-                          ),
+                          CustomTextView(
+                            text: "Logout",
+                            textViewStyle: CustomTextViewStyle.small,
+                            fontWeight: FontWeight.w600,
+                            textColor: Colors.indigo,
+                          )
                         ],
                       ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      LocalStorage.remove(AppConstants.token);
-                      LocalStorage.eraseAll();
-                      Get.offAllNamed(Routes.login);
-                    },
-                    child: const Column(
-                      children: [
-                        Icon(
-                          Icons.logout,
-                          color: Colors.indigo,
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const CustomTextView(
+                  text: "TaskList:",
+                  textViewStyle: CustomTextViewStyle.medium,
+                ),
+                Divider(
+                  color: Colors.grey.shade300,
+                ),
+                const SizedBox(
+                  height: 0,
+                ),
+              StaggeredGrid.count(
+                    crossAxisCount: (Get.width > 600 ? 2 : 1),
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
+                    children: List.generate(
+                        controller.allTask.value?.data?.myTasks?.length ?? 0,
+                        (index) {
+                      final item = controller.allTask.value?.data?.myTasks?[index];
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                        CustomTextView(
-                          text: "Logout",
-                          textViewStyle: CustomTextViewStyle.small,
-                          fontWeight: FontWeight.w600,
-                          textColor: Colors.indigo,
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const CustomTextView(
-                text: "TaskList:",
-                textViewStyle: CustomTextViewStyle.medium,
-              ),
-              Divider(
-                color: Colors.grey.shade300,
-              ),
-              const SizedBox(
-                height: 0,
-              ),
-              GetBuilder<HomeController>(builder: (controller) {
-                return StaggeredGrid.count(
-                  crossAxisCount: (Get.width > 600 ? 2 : 1),
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                  children: List.generate(
-                      controller.allTask.value?.data?.myTasks?.length ?? 0,
-                      (index) {
-                    final item = controller.allTask.value?.data?.myTasks?[index];
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomTextView(
-                                text: item?.title ?? "",
-                                textViewStyle: CustomTextViewStyle.medium,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              CustomTextView(
-                                text: item?.description ?? "",
-                                textViewStyle: CustomTextViewStyle.medium,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        CustomTextView(
-                                          text:
-                                          "Created At:${AppConstants().formatDate(item?.createdAt?.toIso8601String())}",
-                                          textViewStyle: CustomTextViewStyle.small,
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        CustomTextView(
-                                          text:
-                                          "Update At:${AppConstants().formatDate(item?.createdAt?.toIso8601String())}",
-                                          textViewStyle: CustomTextViewStyle.small,
-                                        ),
-                                      ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomTextView(
+                                  text: item?.title ?? "",
+                                  textViewStyle: CustomTextViewStyle.medium,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                CustomTextView(
+                                  text: item?.description ?? "",
+                                  textViewStyle: CustomTextViewStyle.medium,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CustomTextView(
+                                            text:
+                                            "Created At:${AppConstants().formatDate(item?.createdAt?.toIso8601String())}",
+                                            textViewStyle: CustomTextViewStyle.small,
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          CustomTextView(
+                                            text:
+                                            "Update At:${AppConstants().formatDate(item?.createdAt?.toIso8601String())}",
+                                            textViewStyle: CustomTextViewStyle.small,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      showDeleteDialog(context, item?.id ?? "");
-                                    },
-                                    icon: const FaIcon(
-                                      FontAwesomeIcons.trashCan,
-                                      color: Colors.red,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ]),
-                      ),
-                    );
-                  }),
-                );
-              })
-            ],
-          ),
+                                    IconButton(
+                                      onPressed: () {
+                                        showDeleteDialog(context, item?.id ?? "");
+                                      },
+                                      icon: const FaIcon(
+                                        FontAwesomeIcons.trashCan,
+                                        color: Colors.red,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ]),
+                        ),
+                      );
+                    }),
+                  ),
+                const SizedBox(height: 140,)
+              ],
+                        ),
 
-        ),
+                      ),
+            ),
           floatingActionButton: FloatingActionButton(onPressed: (){
             Get.find<HomeController>().showCreateTaskDialog(context);
           },child: const Icon(Icons.add,color: Colors.white,),),
